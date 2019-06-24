@@ -41,9 +41,9 @@ class Query {
       return ResultSet(results);
     } on PlatformException {
       // Remove all listeners on error
-      tokens.keys.forEach((token) {
-        removeChangeListener(token);
-      });
+      for (var token in List.from(tokens.keys)) {
+        await removeChangeListener(token);
+      }
 
       rethrow;
     }
@@ -95,7 +95,7 @@ class Query {
       await subscription.cancel();
     }
 
-    if (_stored && tokens.isNotEmpty) {
+    if (_stored && tokens.isEmpty) {
       // We had to store this before listening to so if stored on the platform
       _stored = !await _channel.invokeMethod('removeQuery', this);
     }
